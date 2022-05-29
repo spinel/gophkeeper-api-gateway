@@ -6,17 +6,20 @@ option go_package = "./pkg/storage/pb";
 
 service StorageService {
   rpc CreateEntity(CreateEntityRequest) returns (CreateEntityResponse) {}
-  //rpc FindOne(FindOneRequest) returns (FindOneResponse) {}
+  rpc FindOne(FindOneRequest) returns (FindOneResponse) {}
+  rpc FindByUser(FindByUserRequest) returns (FindByUserResponse) {}
 }
 
 // CreateEntity
 
 message CreateEntityRequest {
   string identifier = 1;
-  int64 typeID = 2;
+  string uuid = 2;
+  int64 typeID = 3;
+  int64 userID = 4;
   oneof entity {
-    Account account = 3;
-    CreditCard credit_card = 4;
+    Account account = 5;
+    CreditCard credit_card = 6;
 }
 }
 
@@ -34,4 +37,37 @@ message Account{
 message CreditCard{
   string number = 1;
   string holder_name = 2;
+}
+
+
+// FindOne
+
+message FindOneData {
+  int64 id = 1;
+  string identifier = 2;
+  int64 typeID = 3;
+  oneof entity {
+    Account account = 4;
+    CreditCard credit_card = 5;
+}
+}
+
+message FindOneRequest { string uuid = 1; }
+
+message FindOneResponse {
+  int64 status = 1;
+  string error = 2;
+  FindOneData data = 3;
+}
+
+// FindByUser
+
+message FindByUserRequest {
+  int64 user_id = 1;
+}
+
+message FindByUserResponse {
+  int64 status = 1;
+  string error = 2;
+  repeated FindOneData data = 3;
 }
